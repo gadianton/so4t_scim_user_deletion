@@ -18,6 +18,7 @@ A SCIM API script for Stack Overflow for Teams that can delete all deactivated u
 * Install the dependencies: `pip3 install -r requirements.txt`
 
 **Enabling and Authenticating SCIM**
+
 To use the SCIM API, you'll first need to enable SCIM in the admin settings. Second, you'll need to generate a SCIM token to authenticate the API calls.
 - [SCIM Documentation for Basic and Business](https://stackoverflowteams.help/en/articles/4538506-automated-user-provisioning-scim-overview)
 - [SCIM Documentation for Enterprise](https://support.stackenterprise.co/a/solutions/articles/22000236123)
@@ -27,6 +28,7 @@ To use the SCIM API, you'll first need to enable SCIM in the admin settings. Sec
 ## Usage
 
 **Deleting specific users**
+
 If you'd like to delete specific users, create a file named `users.csv` in the same directory as the script. Each line of the file should contain the email address of a user you'd like to delete. 
 
 In a terminal window, navigate to the directory where you unpacked the script. Run the script with the `--csv` flag, replacing the URL, token, and CSV file name with your own:
@@ -34,6 +36,7 @@ In a terminal window, navigate to the directory where you unpacked the script. R
 * For Enterprise: `python3 soft_scim_user_deletion.py --url "https://SUBDOMAIN.stackenterprise.co" --key "YOUR_KEY" --token "YOUR_TOKEN" --csv users.csv`
 
 **Deleting all deactivated users**
+
 If you'd like to delete all deactivated users, run the script with the `--deactivated` flag. In a terminal window, navigate to the directory where you unpacked the script and use the following command, replacing the URL and token with your own:
 * For Basic and Business: `python3 soft_scim_user_deletion.py --url "https://stackoverflowteams.com/c/TEAM-NAME" --token "YOUR_TOKEN" --deactivated`
 * For Enterprise: `python3 soft_scim_user_deletion.py --url "https://SUBDOMAIN.stackenterprise.co" --key "YOUR_KEY" --token "YOUR_TOKEN" --deactivated`
