@@ -29,7 +29,7 @@ To use the SCIM API, you'll first need to enable SCIM in the admin settings. Sec
 
 **Deleting specific users**
 
-If you'd like to delete specific users, create a file named `users.csv` in the same directory as the script. Each line of the file should contain the email address of a user you'd like to delete. 
+If you'd like to delete specific users, create a file named `users.csv` in the same directory as the script. Each line of the file should contain the email address of a user you'd like to delete. You can find a template [here](https://github.com/jklick-so/soft_scim_user_deletion/blob/main/Templates/users.csv).
 
 In a terminal window, navigate to the directory where you unpacked the script. Run the script with the `--csv` flag, replacing the URL, token, and CSV file name with your own:
 * For Basic and Business: `python3 soft_scim_user_deletion.py --url "https://stackoverflowteams.com/c/TEAM-NAME" --token "YOUR_TOKEN" --csv users.csv`
