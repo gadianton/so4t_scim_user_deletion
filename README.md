@@ -21,7 +21,7 @@ A SCIM API script for Stack Overflow for Teams that can delete all deactivated u
 
 To use the SCIM API, you'll first need to enable SCIM in the admin settings. Second, you'll need to generate a SCIM token to authenticate the API calls.
 - [SCIM Documentation for Basic and Business](https://stackoverflowteams.help/en/articles/4538506-automated-user-provisioning-scim-overview)
-- [SCIM Documentation for Enterprise](https://support.stackenterprise.co/a/solutions/articles/22000236123)
+- [SCIM Documentation for Enterprise](https://support.stackenterprise.co/support/solutions/articles/22000236123-system-for-cross-domain-identity-management-scim-2-0-support)
 
 > NOTE: The SCIM token is different from the API token used for Stack Overflow for Teams API. 
 
