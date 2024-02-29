@@ -24,20 +24,24 @@ def main():
         users_to_delete = [user for user in all_users if not user["active"]]
     elif args.csv:
         csv_users_to_delete = get_users_from_csv(args.csv)
-        users_to_delete = []
+        # users_to_delete = []
         for user in csv_users_to_delete:
             scim_user = scim_user_lookup(all_users, email=user)
             if scim_user: # if user_lookup returns None, skip this user
-                users_to_delete.append(scim_user)
+                # users_to_delete.append(scim_user)
+                client.delete_user(scim_user["id"])
     else:
         print("Please provide an argument for which users to delete.")
+        print("Use --deactivated to delete deactivated users.")
+        print("Use --csv to delete users from a CSV file.")
+        print("See README for more information.")
         return
 
-    # Delete users
-    for user in users_to_delete:
-        print("**********")
-        print(f"Deleting user {user['id']} with email {user['emails'][0]['value']}")
-        client.delete_user(user["id"])
+    # # Delete users
+    # for user in users_to_delete:
+    #     print("**********")
+    #     print(f"Deleting user {user['id']} with email {user['emails'][0]['value']}")
+    #     client.delete_user(user["id"])
 
 
 def get_args():
@@ -66,12 +70,6 @@ def get_args():
         help="A CSV file with a list of users to delete."
     )
 
-    # parser.add_argument(
-    #     "--json",
-    #     type=str,
-    #     help="A JSON file with a list of users to delete."
-    # )
-
     parser.add_argument(
         "--deactivated",
         action="store_true",
@@ -94,14 +92,6 @@ def get_users_from_csv(csv_file):
     return users_to_delete
 
 
-# def get_users_from_json(json_file):
-    
-#         with open(json_file, 'r') as f:
-#             users_to_delete = json.load(f)
-    
-#         return users_to_delete
-
-
 def scim_user_lookup(users, email):
 
     print("**********")
@@ -117,7 +107,12 @@ def scim_user_lookup(users, email):
             continue
     
     print(f"User with email {email} not found. Skipping deletion for this user.")
+    pause_script()
     return None
+
+
+def pause_script():
+    input("Press the Enter or Return key to continue...")
 
 
 if __name__ == "__main__":
