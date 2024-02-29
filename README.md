@@ -17,7 +17,7 @@ A SCIM API script for Stack Overflow for Teams that can delete all deactivated u
 * Navigate to the directory where you unpacked the files
 * Install the dependencies: `python3 -m pip install -r requirements.txt --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org`
 
-> NOTE: Depending on your installation of Python, you may need to use `python` or `py` instead of `python3` in the commands above. You can check which command to use by running `python --version` or `py --version` in your terminal.
+> NOTE: Depending on your installation of Python, you may need to use `python` or `py` instead of `python3` in the command above. If `python3` is not a recognized command, you can check which command to use by running `python --version` or `py --version` in your terminal and seeing which responds with the installed Python version.
 
 **Enabling and Authenticating SCIM**
 
