@@ -29,17 +29,19 @@ A Python script for Stack Overflow for Teams that uses the SCIM API to delete a 
 
 To use the SCIM API for deleting users:
 
-* First, enable SCIM in the admin settings. ([Enterprise documentation](https://support.stackenterprise.co/support/solutions/articles/22000236123-system-for-cross-domain-identity-management-scim-2-0-support) | [Business Documentation](https://stackoverflowteams.help/en/articles/4538506-automated-user-provisioning-scim-overview)). 
-    * If this has not been enabled before:
+* First, you'll need to contact Stack Overflow support (support@stackoveflow.com) to help you enable SCIM-based user deletion. Before enabling this functionality, the support team will want to confirm you understand that once a user is deleted, it cannot be restored. The next time a deleted user attempts to login, they'll be prompted to create a new account.
+
+* Second, enable SCIM in the admin settings and obtain a token. ([Enterprise documentation](https://support.stackenterprise.co/support/solutions/articles/22000236123-system-for-cross-domain-identity-management-scim-2-0-support) | [Business Documentation](https://stackoverflowteams.help/en/articles/4538506-automated-user-provisioning-scim-overview)) 
+    * If SCIM has not been enabled before, you'll need to generate a token:
         * For Enterprise, you can configure your own token (whatever text string you'd like) and save it. Preferably, this should be something secure and unique, such as a randomly generated string. To help, here's a well-regarded password generator: [Nord Password Generator](https://nordpass.com/password-generator/). Either way, document this token for use in the script.
         * For Business, you can select the "Generate Token" button to create a token. Document this token for use in the script.
     * If SCIM is already enabled and configured:
         * For Enterprise, you can obtain the SCIM token from the admin settings, by selecting "Show Password" and copying the token to your clipboard.
         * For Business, you'll either need to obtain the SCIM token from the SCIM configuration of your identity provider (IdP), or you can discard the old token to generate a new one. In the latter scenario, make sure you update your IdP's SCIM configuration with the new token.
-* Second, you'll need to enable the ability for SCIM to change user permissions. In the admin settings for SCIM, you'll see one or more check boxes:
+
+* Lastly, you'll need to enable the ability for SCIM to change user permissions. In the admin settings for SCIM, you'll see one or more check boxes:
     * For Enterprise, there's two checkboxes: "Allow Moderator Promotion via a userType property" and "Allow Admin Promotion via a userType property"
     * For Business, there's one checkbox: "Allow SCIM to manage user roles"
-* Lastly, you'll need to contact Stack Overflow support (support@stackoveflow.com) to help you enable SCIM-based user deletion. Before enabling this functionality, the support team will want to confirm you understand that once a user is deleted, it cannot be restored. The next time a deleted user attempts to login, they'll be prompted to create a new account.
 
 ## Usage
 
@@ -48,6 +50,7 @@ To use the SCIM API for deleting users:
 If you'd like to delete specific users, create a file named `users.csv` in the same directory as the script. Each line of the file should contain the email address of a user you'd like to delete. You can find a template [here](https://github.com/jklick-so/so4t_scim_user_deletion/blob/main/Templates/users.csv).
 
 In a terminal window, navigate to the directory where you unpacked the script. Run the script with the `--csv` flag, replacing the URL, token, and CSV file name with your own:
+
 `python3 so4t_scim_user_deletion.py --url "https://SUBDOMAIN.stackenterprise.co" --token "YOUR_TOKEN" --csv "CSV_FILE_NAME.csv"`
 
 **Deleting all deactivated users**
