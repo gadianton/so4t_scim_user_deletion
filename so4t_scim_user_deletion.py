@@ -6,6 +6,10 @@ Or, open an issue here: https://github.com/jklick-so/so4t_scim_user_deletion/iss
 
 # Standard Python libraries
 import argparse
+import csv
+import datetime
+import logging
+import json
 
 # Local libraries
 from so4t_scim import ScimClient
@@ -16,32 +20,64 @@ def main():
     args = get_args()
     client = ScimClient(args.token, args.url)
 
-    # Get all users via API
+    # Get all users via SCIM API and write to a JSON file
     all_users = client.get_all_users()
+    write_json(all_users, 'all_users')
 
-    # Create, format, and validate list of users to delete
-    if args.deactivated:
-        users_to_delete = [user for user in all_users if not user["active"]]
-    elif args.csv:
-        csv_users_to_delete = get_users_from_csv(args.csv)
-        # users_to_delete = []
-        for user in csv_users_to_delete:
-            scim_user = scim_user_lookup(all_users, email=user)
-            if scim_user: # if user_lookup returns None, skip this user
-                # users_to_delete.append(scim_user)
-                client.delete_user(scim_user["id"])
-    else:
-        print("Please provide an argument for which users to delete.")
-        print("Use --deactivated to delete deactivated users.")
-        print("Use --csv to delete users from a CSV file.")
-        print("See README for more information.")
+    failed_deletions = []
+    if args.deactivated and args.csv: # if both --deactivated and --csv flags are provided, print help message
+        logging.info("Please provide only one argument for which users to delete.")
+        logging.info("Use --deactivated to delete deactivated users.")
+        logging.info("Use --csv to delete users from a CSV file.")
+        logging.info("See README for more information.")
         return
 
-    # # Delete users
-    # for user in users_to_delete:
-    #     print("**********")
-    #     print(f"Deleting user {user['id']} with email {user['emails'][0]['value']}")
-    #     client.delete_user(user["id"])
+    elif args.deactivated: # if --deactivated flag is provided, delete deactivated users
+        users_to_delete = [user for user in all_users if not user["active"]]
+        for user in users_to_delete:
+            deletion_result = client.delete_user(user["id"])
+            if deletion_result['status'] != 'success':
+                failed_deletions.append(deletion_result)
+
+    elif args.csv: # if a CSV file is provided, delete users from the CSV file
+        csv_users_to_delete = get_users_from_csv(args.csv)
+        for user in csv_users_to_delete:
+            scim_user = scim_user_lookup(all_users, email=user)
+            if scim_user is None: # if user_lookup returns None, skip this user
+                deletion_result = {
+                    'email': user,
+                    'status': 'failed',
+                    'message': 'User email address not found via SCIM API'
+                }
+                failed_deletions.append(deletion_result)
+            else: # if user_lookup returns a user, attempt to delete the user
+                deletion_result = client.delete_user(scim_user["id"])
+                deletion_result['email'] = user
+                if deletion_result['status'] != 'success':
+                    failed_deletions.append(deletion_result)
+
+    else: # if no arguments are provided, print help message
+        logging.info("Please provide an argument for which users to delete.")
+        logging.info("Use --deactivated to delete deactivated users.")
+        logging.info("Use --csv to delete users from a CSV file.")
+        logging.info("See README for more information.")
+        return
+    
+    # get date and time of report generation to add to the filename
+    # this ensures that previous reports are not overwritten when script is run multiple times
+    report_date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    if len(failed_deletions) == 0:
+        logging.info("All users deleted successfully.")
+        failed_deletions = {
+            'status': 'success',
+            'message': 'All selected users were deleted successfully.'
+        }
+    else:
+        logging.warning("Some users were not deleted successfully.")
+        logging.warning("Please review 'failed_deletions.json' for any users that were not deleted successfully.")
+
+    write_json(failed_deletions, f"failed_deletions_{report_date}") # write failed deletions to a JSON file
 
 
 def get_args():
@@ -86,33 +122,34 @@ def get_users_from_csv(csv_file):
     users_to_delete = []
 
     with open(csv_file, 'r') as f:
-        for line in f:
-            users_to_delete.append(line.strip())
+        csv_reader = csv.reader(f)
+        for line in csv_reader:
+            users_to_delete.append(line[0])
 
     return users_to_delete
 
 
 def scim_user_lookup(users, email):
 
-    print("**********")
-    print(f"Finding account ID for user with email {email}...")
+    logging.debug("**********")
+    logging.debug(f"Finding account ID for user with email {email}...")
     for user in users:
         try:
-            if user["emails"][0]["value"] == email:
-                print(f"Account ID is {user['id']}")
+            if user["emails"][0]["value"].lower() == email.lower():
+                logging.debug(f"Account ID is {user['id']}")
                 return user
-        except KeyError:
-            # print(f"Found SCIM user with no email address:")
-            # print(user)
+        except KeyError: # if SCIM user does not have an email address, skip this user
             continue
-    
-    print(f"User with email {email} not found. Skipping deletion for this user.")
-    pause_script()
+
     return None
 
 
-def pause_script():
-    input("Press the Enter or Return key to continue...")
+def write_json(data, file_name):
+
+    file_path = file_name+'.json'
+
+    with open(file_path, 'w') as f:
+        f.write(json.dumps(data, indent=4))
 
 
 if __name__ == "__main__":
