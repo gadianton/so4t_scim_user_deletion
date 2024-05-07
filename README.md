@@ -31,7 +31,7 @@ To use the SCIM API for deleting users:
 
 * First, you'll need to contact Stack Overflow support (support@stackoveflow.com) to help you enable SCIM-based user deletion. Before enabling this functionality, the support team will want to confirm you understand that once a user is deleted, it cannot be restored. The next time a deleted user attempts to login, they'll be prompted to create a new account.
 
-* Second, enable SCIM in the admin settings and obtain a token. ([Enterprise documentation](https://support.stackenterprise.co/support/solutions/articles/22000236123-system-for-cross-domain-identity-management-scim-2-0-support) | [Business Documentation](https://stackoverflowteams.help/en/articles/4538506-automated-user-provisioning-scim-overview)) 
+* Second, enable SCIM in the admin settings and obtain a token. ([Enterprise Documentation](https://support.stackenterprise.co/support/solutions/articles/22000236123-system-for-cross-domain-identity-management-scim-2-0-support) | [Business Documentation](https://stackoverflowteams.help/en/articles/4538506-automated-user-provisioning-scim-overview)) 
     * If SCIM has not been enabled before, you'll need to generate a token:
         * For Enterprise, you can configure your own token (whatever text string you'd like) and save it. Preferably, this should be something secure and unique, such as a randomly generated string. To help, here's a well-regarded password generator: [Nord Password Generator](https://nordpass.com/password-generator/). Either way, document this token for use in the script.
         * For Business, you can select the "Generate Token" button to create a token. Document this token for use in the script.
